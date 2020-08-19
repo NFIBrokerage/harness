@@ -103,3 +103,11 @@ $ tree -a
 
 7 directories, 7 files
 ```
+
+Generally the workflow for a run of `mix harness` is
+
+1. read the configuration in `harness.exs`
+1. determine a data structure that satisfies the configuration
+1. run that configuration through template generators
+1. store the generated files in `.harness/`
+1. create any necessary symlinks from `.harness/` to `./`
