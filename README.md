@@ -9,7 +9,56 @@ harness the boilerplate!
 Harness simplifies writing tiny isolated services by dynamically generating
 unecssary boilerplate files.
 
-You might have a git repo for a µ controller that looks like this:
+Whoa that's a lotta words. Can you gimme the tl;dr?
+
+Sure! Harness lets you version your practices.
+
+...
+
+What, not enough? Lemme try again.
+
+## Rationale
+
+Harness provides an easy interface for creating a verisonable service
+[chassis](https://microservices.io/patterns/microservice-chassis.html). For
+example, in your Elixir shoppe, you might use excoveralls for coverage testing,
+credo for linting, distillery for releasing, and Appsignal for metricing.
+
+That's a lot of boilerplate configuration to setup though. You have to add
+a `coveralls.json` file for coverage, `.credo.exs` for linting, `Dockerfile`
+and `rel/config.exs` for releasing, and in-app changes for Appsignal metric
+gathering and shipping. Stand-alone services are file-expensive. You need
+**lots** of config files to setup the service chassis.
+
+So to combat the ridiculous amount of work you need to do to setup a service
+from scratch, you make a static code generator like
+[NFIBrokerage/gaas](https://github.com/NFIBrokerage/gaas). GaaS works out great
+for creating new services, small or large, and adding to existing ones. So
+what's the problem?
+
+Consider adding a new practice to an app. In one app, you add a new way of
+doing something that might be useful for all apps, like propagating trace
+headers. Now that you've added it to one service, you should add it to all
+of them, but how are you gonna do that? First you update the generator for all
+new projects and then you use that generator on all existing projects. Maybe
+you have to do some manual work like click merge buttons, but in the end things
+could be worse. This doesn't sound like the end of the world, so why do I need
+harness? Well maybe a small change isn't so bad across 5 repos. You could turn
+that out in a half-hour maybe. 10 repos is starting to push it. Across a
+hundred repos a change is herculean. It's simply too much work to apply a new
+practice across so many repos. And let's not even talk about difficult changes
+like changes requiring manual intervention.
+
+To a harness project, static code generation is like running `npm install` and
+then committing the resulting `node_modules/` folder. Good luck getting _that_
+out of your git repo. It's easier to get red wine out of a white carpet.
+Harness combats this boilerplate by hiding it. If you don't commit a file, it
+never existed, and it's awfully easy to change the contents of files that never
+existed. Sounds dangerous? Read on.
+
+## What does it actually do?
+
+Say you have a git repo for a µ controller that looks like this:
 
 ```
 $ tree -a
@@ -18,30 +67,19 @@ $ tree -a
 │   └── workflows
 │       └── ci.yml
 ├── .gitignore
-├── harnessfile.exs
+├── harness.exs
 ├── mix.lock
 └── my_plug.ex
 
 2 directories, 5 files
 ```
 
-but expands to a fully featured phoenix project with cool stuff like
-
-- necessary `mix.exs` setup
-- supervision tree
-- observalibity tooling
-- release configuration (`rel/config.exs`, `Docefile`)
-- testing configuration (`coveralls.js`, `.credo.exs`)
-
-and more(!) with a simple `mix harness`.
-
-## What does it do?
-
 In a directory with a harness-file (`harness.exs`), a run of `mix harness` will
 generate a `.harness/` directory containing generated boilerplate, with the
-`mix.exs` symlinked to the root of the git repository.
+necessary symlinking and path adjusting to make the project run like a normal
+phoenix project.
 
-For example, the above repository would expand to
+For example, the above repository would expand to something like:
 
 ```
 $ mix harness
@@ -52,39 +90,16 @@ $ tree -a
 │       └── ci.yml
 ├── .gitignore
 ├── .harness
-│   ├── config
-│   ├── lib
+│   ├── config/..
+│   ├── lib/..
 │   ├── mix.exs
 │   ├── rel
-│   └── test
-├── harnessfile.exs
+│   └── test/..
+├── config/..
+├── harness.exs
 ├── mix.exs -> .harness/mix.exs
 ├── mix.lock
 └── my_plug.ex
 
 7 directories, 7 files
-
 ```
-
-after `mix harness`. Since the `.gitignore` ignores unecessary files, the git
-repository ends up being as clean as the first snippet.
-
-## Rationale
-
-Harness lives to make starting new projects easy. Harness provides a way to
-describe a common
-[chassis](https://microservices.io/patterns/microservice-chassis.html) between
-services.
-
-#### Why not just code generation?
-
-Generating static boilerplate files in a git repo is good: all generated files
-are likely to be consistent and fully-featured with minimal effort from the
-service author(s).
-
-As these generated files age, though, they become difficult to maintain across
-many repositories. They suffer from the common DRY gripe: once code is
-duplicated, you'll need to update it twice to be consistent.
-
-Harness seeks to expand on static code generation by making it lazy and
-dynamic.
