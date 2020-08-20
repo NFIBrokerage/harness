@@ -165,8 +165,7 @@ $ tree -a -I '.git|_build|deps|.elixir_ls|cover'
 ├── lib
 │   ├── access_token_controller.ex
 │   ├── access_token_fetcher.ex
-│   ├── access_token_verifier.ex
-│   └── authentication_service_access_token_controller_web
+│   └── access_token_verifier.ex
 ├── mix.exs -> .harness/mix.exs
 ├── mix.lock
 └── test
@@ -175,7 +174,7 @@ $ tree -a -I '.git|_build|deps|.elixir_ls|cover'
     │   └── mocks.ex
     └── test_helper.exs -> ../.harness/test/test_helper.exs
 
-22 directories, 51 files
+21 directories, 51 files
 ```
 
 Generally the workflow for a run of `mix harness` is
