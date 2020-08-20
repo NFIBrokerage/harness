@@ -7,12 +7,12 @@ harness the boilerplate!
 > N.B. harness is just a concept for now
 
 It's hard to describe exactly what harness is for. Here's a couple of good
-taglines:
+tagliness. Harness:
 
-- harness simplifies writing tiny isolated services by dynamically generating
+- simplifies writing tiny isolated services by dynamically generating
   unecessary boilerplate files
-- harness makes it easy to version your practice
-- harness lets you make a library out of anything!
+- makes it easy to version your practices
+- lets you make a library out of anything!
 
 ## Rationale
 
