@@ -60,7 +60,7 @@ The inner workings of harness are actually pretty simple.
 Say you have a git repo for a µ controller that looks like this:
 
 ```
-$ tree -a
+$ tree -a -I '.git'
 .
 ├── .github
 │   ├── settings.yml
