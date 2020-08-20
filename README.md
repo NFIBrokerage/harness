@@ -6,16 +6,13 @@ harness the boilerplate!
 
 > N.B. harness is just a concept for now
 
-Harness simplifies writing tiny isolated services by dynamically generating
-unecssary boilerplate files.
+It's hard to describe exactly what harness is for. Here's a couple of good
+taglines:
 
-Whoa that's a lotta words. Can you gimme the tl;dr?
-
-Sure! Harness lets you version your practices.
-
-...
-
-What, not enough? Lemme try again.
+- harness simplifies writing tiny isolated services by dynamically generating
+  unecessary boilerplate files
+- harness makes it easy to version your practice
+- harness lets you make a library out of anything!
 
 ## Rationale
 
@@ -57,6 +54,8 @@ never existed, and it's awfully easy to change the contents of files that never
 existed. Sounds dangerous? Read on.
 
 ## What does it actually do?
+
+The inner workings of harness are actually pretty simple.
 
 Say you have a git repo for a µ controller that looks like this:
 
