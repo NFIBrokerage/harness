@@ -63,14 +63,31 @@ Say you have a git repo for a µ controller that looks like this:
 $ tree -a
 .
 ├── .github
+│   ├── settings.yml
+│   ├── stale.yml
 │   └── workflows
-│       └── ci.yml
+│       ├── ci.yml
+│       ├── purge-artifacts.yml
+│       └── refresh-prod-cache.yml
 ├── .gitignore
+├── README.md
+├── config
+│   ├── config.exs
+│   ├── dev.exs
+│   ├── prod.exs
+│   └── test.exs
 ├── harness.exs
+├── lib
+│   ├── access_token_controller.ex
+│   ├── access_token_fetcher.ex
+│   └── access_token_verifier.ex
 ├── mix.lock
-└── my_plug.ex
+└── test
+    ├── access_token_controller_test.exs
+    └── support
+        └── mocks.ex
 
-2 directories, 5 files
+6 directories, 18 files
 ```
 
 In a directory with a harness-file (`harness.exs`), a run of `mix harness` will
@@ -82,25 +99,83 @@ For example, the above repository would expand to something like:
 
 ```
 $ mix harness
-$ tree -a
+$ tree -a -I '.git|_build|deps|.elixir_ls|cover'
 .
+├── .credo.exs -> .harness/.credo.exs
+├── .dockerignore -> .harness/.dockerignore
+├── .formatter.exs -> .harness/.formatter.exs
 ├── .github
+│   ├── settings.yml
+│   ├── stale.yml
 │   └── workflows
-│       └── ci.yml
+│       ├── ci.yml
+│       ├── purge-artifacts.yml
+│       └── refresh-prod-cache.yml
 ├── .gitignore
 ├── .harness
-│   ├── config/..
-│   ├── lib/..
+│   ├── .credo.exs
+│   ├── .dockerignore
+│   ├── .formatter.exs
+│   ├── .tool-versions
+│   ├── Dockerfile
+│   ├── config
+│   │   ├── config.exs
+│   │   ├── dev.exs
+│   │   ├── prod.exs
+│   │   └── test.exs
+│   ├── coveralls.json
+│   ├── lib
+│   │   ├── authentication_service_access_token_controller
+│   │   │   └── application.ex
+│   │   ├── authentication_service_access_token_controller_web
+│   │   │   ├── channels
+│   │   │   ├── controllers
+│   │   │   │   └── version_controller.ex
+│   │   │   ├── endpoint.ex
+│   │   │   ├── gettext.ex
+│   │   │   ├── router.ex
+│   │   │   └── views
+│   │   │       ├── error_helpers.ex
+│   │   │       └── error_view.ex
+│   │   └── authentication_service_access_token_controller_web.ex
 │   ├── mix.exs
 │   ├── rel
-│   └── test/..
-├── config/..
+│   │   └── config.exs
+│   └── test
+│       ├── authentication_service_access_token_controller_web
+│       │   ├── controllers
+│       │   │   └── version_controller_test.exs
+│       │   ├── live
+│       │   └── views
+│       │       └── error_view_test.exs
+│       ├── support
+│       │   ├── conn_case.ex
+│       │   └── mock_release_handler.ex
+│       └── test_helper.exs
+├── .projections.json -> /Users/snap/.config/.projections.json
+├── .tool-versions -> .harness/.tool-versions
+├── README.md
+├── config
+│   ├── config.exs
+│   ├── dev.exs
+│   ├── prod.exs
+│   └── test.exs
+├── coveralls.json -> .harness/coveralls.json
 ├── harness.exs
+├── lib
+│   ├── access_token_controller.ex
+│   ├── access_token_fetcher.ex
+│   ├── access_token_verifier.ex
+│   └── authentication_service_access_token_controller_web
 ├── mix.exs -> .harness/mix.exs
 ├── mix.lock
-└── my_plug.ex
+└── test
+    ├── access_token_controller_test.exs
+    ├── support
+    │   └── mocks.ex
+    └── test_helper.exs -> ../.harness/test/test_helper.exs
 
-7 directories, 7 files
+22 directories, 51 files
 ```
 
 Generally the workflow for a run of `mix harness` is
