@@ -55,6 +55,9 @@ existed. Sounds dangerous? Read on.
 
 ## What does it actually do?
 
+See the demo thread
+[here](https://cuatrohq.slack.com/archives/CLZB3BKRT/p1598027779000300)!
+
 The inner workings of harness are actually pretty simple.
 
 Say you have a git repo for a µ controller that looks like this:
