@@ -46,8 +46,8 @@ defmodule Harness.MixProject do
       # docs
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       # test
-      {:bless, "~> 1.0"},
-      {:convene, "~> 0.2", organization: "cuatro", only: [:dev, :test]},
+      {:bless, "~> 1.0", only: :test},
+      {:convene, "~> 0.2", organization: "cuatro", only: :test},
       {:excoveralls, "~> 0.7", only: :test}
     ]
   end
