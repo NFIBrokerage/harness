@@ -192,4 +192,4 @@ Generally the workflow for a run of `mix harness` is
 
 1. v0.0.1: generate a µ controller on demand
   - templates for this µ controller will be _in_ the harness repository
-1. v1.0.0: move templates out of the harness repository
+1. v0.1.0: move templates out of the harness repository
