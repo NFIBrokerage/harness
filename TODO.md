@@ -1,0 +1,7 @@
+- [x] fetch dependencies from hex
+- [ ] remove the Cache module
+- [ ] create a hex archive
+- [ ] publish dotfiles package
+- [ ] depend on dotfiles package in micro controller package
+- [ ] publish micro controller package
+- [ ] use micro controller package in authentication service controller
