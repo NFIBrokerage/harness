@@ -30,11 +30,17 @@ defmodule Harness.Renderer.Run do
   end
 
   def source_files(%__MODULE__{package_directory: pkg_path} = run) do
+    files_in_pkg =
+      pkg_path
+      |> Path.join("/**")
+      |> Path.wildcard(match_dot: true)
+      |> Enum.reject(fn filename ->
+        Enum.any?(Harness.ignore_patterns(), &Regex.match?(&1, filename))
+      end)
+
     # by including the `pkg_path`, we setup harness to later create the
     # `.harness/` directory before any other files/dirs/links
-    files_in_pkg = [
-      pkg_path | Path.join(pkg_path, "/**") |> Path.wildcard(match_dot: true)
-    ]
+    files_in_pkg = [pkg_path | files_in_pkg]
 
     files =
       files_in_pkg

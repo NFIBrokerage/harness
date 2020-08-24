@@ -6,7 +6,32 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.0.0 - 2020-08-19
+## v0.0.1 - 2020-08-24
+
+### Added
+
+- Vim swap files are now ignored from template directories
+
+### Fixed
+
+- The harness project is reloaded after `mix harness.compile` when running `mix
+  harness`
+    - this fixes an issue where otp app atoms could not be determined on clean
+      harness runs, as in CI
+
+### Removed
+
+- The `Harness.Cache` module has been removed
+    - now harness caches packages by downloading them to the `deps/` directory
+    - this behaviour mimicks `mix`
+
+## v0.0.0 - 2020-08-24
+
+### Added
+
+- Initial dependency management and generation abilities
+
+## initial commit - 2020-08-19
 
 ### Added
 

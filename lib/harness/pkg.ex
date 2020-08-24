@@ -26,26 +26,6 @@ defmodule Harness.Pkg do
 
   defstruct [:path, :module, :config, :files, :name, :links]
 
-  alias Harness.Cache
-
-  def read(name) when is_atom(name) do
-    Cache.dir()
-    |> Path.join(Atom.to_string(name))
-    |> read()
-  end
-
-  def read(path) when is_binary(path) do
-    if File.dir?(path) do
-      path
-      |> Path.join("pkg.exs")
-      |> read()
-    else
-      {{:module, module, _, _}, _} = Code.eval_file(path)
-
-      module
-    end
-  end
-
   def path(generator) do
     otp_app = otp_app(generator)
 
