@@ -34,8 +34,7 @@ defmodule Harness.Renderer.File do
   end
 
   def source(path, %Run{package_directory: pkg_path}, type) do
-    file_relative_to_project =
-      String.trim_leading(path, pkg_path)
+    file_relative_to_project = String.trim_leading(path, pkg_path)
 
     %__MODULE__{
       source_path: path,
@@ -46,7 +45,7 @@ defmodule Harness.Renderer.File do
 
   @spec generate(%Run{}, %__MODULE__{}) :: String.t()
   def generate(%Run{} = run, %__MODULE__{root?: true}) do
-    cyan(":" <> run.generator_name)
+    cyan(inspect(run.generator_name))
   end
 
   def generate(%Run{} = run, %__MODULE__{type: :regular} = file) do
@@ -59,7 +58,7 @@ defmodule Harness.Renderer.File do
         functions: [{Helpers, Helpers.__info__(:functions)}]
       )
       # this shouldn't be necessary but it prevents a strange dialyzer warn
-      |> format_elixir(Path.extname(file.source_path))
+      |> format_elixir(path, Path.extname(file.source_path))
 
     with {:ok, prior_contents} <- File.read(path),
          true <- prior_contents == generated_contents do
@@ -129,22 +128,22 @@ defmodule Harness.Renderer.File do
     |> Path.join()
   end
 
-  defp format_elixir(generated_code, ".ex") do
+  defp format_elixir(generated_code, filename, ".ex") do
     formatted_code =
       generated_code
       |> to_string()
-      |> Code.format_string!()
+      |> Code.format_string!(file: filename)
       |> to_string()
 
     formatted_code <> "\n"
   end
 
-  defp format_elixir(generated_code, ".exs") do
+  defp format_elixir(generated_code, filename, ".exs") do
     # let's just pretend it's .ex
-    format_elixir(generated_code, ".ex")
+    format_elixir(generated_code, filename, ".ex")
   end
 
-  defp format_elixir(generated_code, _any_other_extension) do
+  defp format_elixir(generated_code, _filename, _any_other_extension) do
     generated_code
   end
 

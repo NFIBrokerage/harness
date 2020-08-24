@@ -5,26 +5,24 @@ defmodule Harness.Renderer.Run do
   # - generation path (where the files are being created)
   # - generator module (which generator is producing files)
 
-  alias Harness.{Cache, Pkg}
-  alias Harness.Renderer
+  alias Harness.{Pkg, Renderer}
 
   defstruct [
     :output_directory,
     :generator_module,
-    :generator_config, 
+    :generator_config,
     :generator_name,
     :package_directory,
     :files
   ]
 
-  def source(generator_name, opts, output_directory) do
-    pkg_path = Cache.dir() |> Path.join(generator_name)
-    generator_module = Pkg.read(pkg_path)
+  def source(generator_module, opts, output_directory) do
+    pkg_path = Pkg.path(generator_module)
     generator_config = generator_module.cast(opts) |> flatten_config()
 
     %__MODULE__{
       output_directory: output_directory,
-      generator_name: generator_name,
+      generator_name: Pkg.otp_app(generator_module),
       generator_module: generator_module,
       generator_config: generator_config,
       package_directory: pkg_path
@@ -34,13 +32,14 @@ defmodule Harness.Renderer.Run do
   def source_files(%__MODULE__{package_directory: pkg_path} = run) do
     # by including the `pkg_path`, we setup harness to later create the
     # `.harness/` directory before any other files/dirs/links
-    files_in_pkg =
-      [pkg_path | Path.join(pkg_path, "/**") |> Path.wildcard(match_dot: true)]
+    files_in_pkg = [
+      pkg_path | Path.join(pkg_path, "/**") |> Path.wildcard(match_dot: true)
+    ]
 
     files =
       files_in_pkg
       |> Enum.map(&Renderer.File.source(&1, run, File.lstat!(&1).type))
-      |> Enum.reject(& &1.output_path == Path.join(".harness", "pkg.exs"))
+      |> Enum.reject(&(&1.output_path == Path.join(".harness", "pkg.exs")))
 
     links =
       run.generator_config
@@ -66,7 +65,10 @@ defmodule Harness.Renderer.Run do
     expanded_files =
       run.files
       |> Enum.map(fn file ->
-        %{file | output_path: substitute_vars(file.output_path, run.generator_config)}
+        %{
+          file
+          | output_path: substitute_vars(file.output_path, run.generator_config)
+        }
       end)
 
     %{run | files: expanded_files}

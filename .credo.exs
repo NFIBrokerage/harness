@@ -52,7 +52,7 @@
         ## Cuatro Checks
         #
         {Convene.Check.ModulenameMatchesFilename,
-         excluded: [~r(test/support/)]},
+         excluded: [~r"test/support/", ~r"lib/mix/tasks/"]},
 
         #
         ## Consistency Checks

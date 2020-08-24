@@ -45,4 +45,29 @@ defmodule Harness.Pkg do
       module
     end
   end
+
+  def path(generator) do
+    otp_app = otp_app(generator)
+
+    Mix.Dep.cached()
+    |> Enum.find(fn %Mix.Dep{app: app} -> app == otp_app end)
+    |> Map.fetch!(:opts)
+    |> Keyword.fetch!(:dest)
+    |> Path.join("templates")
+  end
+
+  def otp_app(generator) do
+    case :application.get_application(generator) do
+      {:ok, otp_app} ->
+        otp_app
+
+      :undefined ->
+        Mix.raise(
+          "Could not determine the otp app for " <>
+            inspect(generator) <>
+            ".\n" <>
+            "You may need to fetch dependencies with \"mix harness.get\""
+        )
+    end
+  end
 end
