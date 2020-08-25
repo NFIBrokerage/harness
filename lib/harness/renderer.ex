@@ -19,24 +19,24 @@ defmodule Harness.Renderer do
   def render(%Run{} = run) do
     run
     |> into_tree()
-    |> generate_tree()
+    |> generate_tree(run)
   end
 
-  defp into_tree(%Run{files: rest} = run) do
+  defp into_tree(%Run{files: rest}) do
     root = %File{output_path: ".", type: :directory}
-    into_tree(rest, {root, _children = [], run})
+    into_tree(rest, {root, _children = []})
   end
 
-  defp into_tree([], {parent, children, run}), do: {parent, sort(children), run}
+  defp into_tree([], {parent, children}), do: {parent, sort(children)}
 
-  defp into_tree([node | rest], {parent, children, run}) do
+  defp into_tree([node | rest], {parent, children}) do
     if child?(node, parent) do
       into_tree(
         rest,
-        {parent, [into_tree(rest, {node, [], run}) | children], run}
+        {parent, [into_tree(rest, {node, []}) | children]}
       )
     else
-      into_tree(rest, {parent, children, run})
+      into_tree(rest, {parent, children})
     end
   end
 
@@ -44,8 +44,8 @@ defmodule Harness.Renderer do
     Path.dirname(node.output_path) == parent.output_path
   end
 
-  defp generate_tree(tree) do
-    {_parent, children, run} = tree
+  defp generate_tree(tree, run) do
+    {_parent, children} = tree
 
     root_node = %File{
       output_path: run.output_directory,
@@ -58,16 +58,16 @@ defmodule Harness.Renderer do
 
     {time, _return_value} =
       :timer.tc(fn ->
-        [{root_node, children, run}]
-        |> Tree.print_tree(&tree_node_callback/1, format: "pretty")
+        [{root_node, children}]
+        |> Tree.print_tree(&tree_node_callback(&1, run), format: "pretty")
       end)
 
     Mix.shell().info("Done in #{Utils.format_time(time)}")
   end
 
-  @spec tree_node_callback({%File{}, [%File{}], %Run{}}) ::
-          {{String.t(), String.t()}, [%File{}]}
-  defp tree_node_callback({%File{} = parent, children, %Run{} = run})
+  @spec tree_node_callback({%File{}, [tuple()]}, %Run{}) ::
+          {{String.t(), String.t()}, [tuple()]}
+  defp tree_node_callback({%File{} = parent, children}, %Run{} = run)
        when is_list(children) do
     {{File.print(parent), File.generate(run, parent)}, children}
   end
@@ -76,6 +76,6 @@ defmodule Harness.Renderer do
     children
     |> Enum.reverse()
     # puts all the symlinks last
-    |> Enum.sort_by(fn {node, _children, _run} -> node.type == :symlink end)
+    |> Enum.sort_by(fn {node, _children} -> node.type == :symlink end)
   end
 end
