@@ -105,6 +105,16 @@ defmodule Harness.Renderer.File do
     end
   end
 
+  def remove!(%__MODULE__{type: :symlink, output_path: path}) do
+    if path |> link_file_exists? do
+      path |> File.rm!()
+    end
+
+    if path |> Path.dirname() |> directory_is_empty? do
+      path |> Path.dirname() |> File.rmdir!()
+    end
+  end
+
   # this path is interesting to generate because you need to preceed the path
   # with a number of ../'s equal to the directory depth of the file being
   # generated
@@ -141,5 +151,15 @@ defmodule Harness.Renderer.File do
 
   defp format_elixir(generated_code, _filename, _any_other_extension) do
     generated_code
+  end
+
+  defp directory_is_empty?(path) do
+    File.ls!(path) == []
+  end
+
+  # `File.exists?/1` will return `false` for broken links, which causes an
+  # issue when cleaning multiple generators
+  defp link_file_exists?(path) do
+    :elixir_utils.read_link_type(path) == {:ok, :symlink}
   end
 end

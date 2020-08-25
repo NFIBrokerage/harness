@@ -12,9 +12,9 @@ defmodule Mix.Tasks.Harness do
   alias Harness.{Manifest, Renderer}
 
   @impl Mix.Task
-  def run([]), do: run(["."])
+  def run(_args) do
+    path = "."
 
-  def run([path]) do
     Mix.Task.run("harness.compile", [path])
 
     Manifest.load(path)

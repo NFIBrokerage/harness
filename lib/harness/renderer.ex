@@ -78,4 +78,24 @@ defmodule Harness.Renderer do
     # puts all the symlinks last
     |> Enum.sort_by(fn {node, _children} -> node.type == :symlink end)
   end
+
+  def clean(path) when is_binary(path) do
+    manifest = Manifest.read(path)
+
+    manifest.generators
+    |> Enum.map(&Run.source(&1, manifest.opts, path))
+    |> Enum.map(&Run.source_files/1)
+    |> Enum.map(&Run.expand_paths/1)
+    |> Enum.each(&clean/1)
+
+    path
+    |> Path.join(".harness")
+    |> Elixir.File.rm_rf!()
+  end
+
+  def clean(%Run{} = run) do
+    run.files
+    |> Enum.filter(fn %{type: type} -> type == :symlink end)
+    |> Enum.each(&File.remove!/1)
+  end
 end

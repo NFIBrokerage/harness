@@ -13,9 +13,9 @@ defmodule Mix.Tasks.Harness.Get do
   alias Harness.Manifest
 
   @impl Mix.Task
-  def run([]), do: run(["."])
+  def run(_args) do
+    path = "."
 
-  def run([path]) do
     Manifest.load(path)
 
     Mix.Tasks.Deps.Get.run([])

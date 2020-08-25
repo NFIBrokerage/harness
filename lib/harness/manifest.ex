@@ -7,8 +7,13 @@ defmodule Harness.Manifest do
 
   defstruct generators: [], opts: [], deps: [], manifest_version: nil
 
+  @doc false
+  def version, do: "~> 0.0.0"
+
+  @doc false
   def manifest_file, do: "harness.exs"
 
+  @doc "reads the manifest file from the path"
   def read(path) do
     with false <- File.dir?(path),
          {:ok, contents} <- File.read(path),
@@ -25,6 +30,17 @@ defmodule Harness.Manifest do
     end
   end
 
+  @doc """
+  Loads the manifest onto the project stack and loads dependencies
+
+  By clearing and pushing a fake project onto the `Mix.ProjectStack`, we can
+  utilize large parts of the Mix codebase without much hacking or rewriting.
+
+  This function clears the existing stack and pushes a configuration onto it.
+  Most of the configuration follows the defaults, but the dependencies are
+  read from the harness manifest (`harness.exs`) and the dependency versions
+  are locked to `harness.lock`.
+  """
   def load(path) do
     manifest = read(path)
 
