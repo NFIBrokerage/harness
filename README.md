@@ -188,8 +188,15 @@ Generally the workflow for a run of `mix harness` is
 1. store the generated files in `.harness/`
 1. create any necessary symlinks from `.harness/` to `./`
 
-## Roadmap
+## Development
 
-1. v0.0.1: generate a µ controller on demand
-  - templates for this µ controller will be _in_ the harness repository
-1. v0.1.0: move templates out of the harness repository
+Interested in developing harness? Currently it's in a tight spot because it
+doesn't have any test cases. Your best bet for blessing harness is to build
+and install harness archives locally and use the local installation to harness
+packages like `harness_micro_controller`.
+
+```
+mix archive.uninstall harness --force
+MIX_ENV=prod mix archive.build
+mix archive.install harness-0.0.0.ez --force
+```
