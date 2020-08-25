@@ -5,10 +5,14 @@ defmodule Harness.Manifest do
 
   alias Mix.ProjectStack
 
+  @version_match_msg "Could not parse the harness.exs manifest because the " <>
+                       "manifest version is not compatible with the installed harness " <>
+                       "archive. Please update the manifest or the harness archive."
+
   defstruct generators: [], opts: [], deps: [], manifest_version: nil
 
   @doc false
-  def version, do: "~> 0.0.0"
+  def version, do: "~> 1.0"
 
   @doc false
   def manifest_file, do: "harness.exs"
@@ -17,11 +21,16 @@ defmodule Harness.Manifest do
   def read(path) do
     with false <- File.dir?(path),
          {:ok, contents} <- File.read(path),
-         {manifest, []} <- Code.eval_string(contents) do
-      struct(__MODULE__, manifest)
+         {raw_manifest, []} <- Code.eval_string(contents),
+         %__MODULE__{} = manifest <- struct(__MODULE__, raw_manifest),
+         {:version_match, true} <- {:version_match, version_match?(manifest)} do
+      manifest
     else
       true = _is_directory ->
         path |> Path.join("harness.exs") |> read()
+
+      {:version_match, false} ->
+        Mix.raise(@version_match_msg)
 
       _could_not_be_evaluated ->
         Mix.raise(
@@ -82,5 +91,11 @@ defmodule Harness.Manifest do
       preferred_cli_env: [],
       start_permanent: false
     ]
+  end
+
+  defp version_match?(%{manifest_version: nil}), do: false
+
+  defp version_match?(manifest) do
+    Version.match?(manifest.manifest_version, version())
   end
 end
