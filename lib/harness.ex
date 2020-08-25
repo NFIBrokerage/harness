@@ -6,7 +6,8 @@ defmodule Harness do
   def ignore_patterns do
     [
       # ignore vim swapfiles
-      ~r"\..*\.swp$"
+      ~r"\..*\.swp$",
+      ~r"\.elixir_ls"
     ]
   end
 end
