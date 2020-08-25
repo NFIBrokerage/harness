@@ -1,8 +1,0 @@
-- [x] fetch dependencies from hex
-- [x] remove the Cache module
-- [x] create a hex archive
-- [x] publish dotfiles package
-- [x] depend on dotfiles package in micro controller package
-- [ ] publish micro controller package
-- [ ] use micro controller package in authentication service controller
-- [x] create a `mix harness.clean` package that removes the files and links
