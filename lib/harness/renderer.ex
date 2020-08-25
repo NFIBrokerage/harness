@@ -1,7 +1,7 @@
 defmodule Harness.Renderer do
-  @moduledoc """
-  Functions for rendering a harness package into the current directory
-  """
+  @moduledoc false
+
+  # Functions for rendering a harness package into the current directory
 
   alias Harness.{Manifest, Tree}
   alias Harness.Renderer.{Run, File, Utils}
@@ -54,7 +54,6 @@ defmodule Harness.Renderer do
     }
 
     Mix.shell().info("==> #{run.generator_name}")
-    Mix.shell().info("Generating #{length(run.files)} files")
 
     {time, _return_value} =
       :timer.tc(fn ->
@@ -62,7 +61,9 @@ defmodule Harness.Renderer do
         |> Tree.print_tree(&tree_node_callback(&1, run), format: "pretty")
       end)
 
-    Mix.shell().info("Done in #{Utils.format_time(time)}")
+    Mix.shell().info("""
+    Harnessed #{Run.file_composition(run)} in #{Utils.format_time(time)}
+    """)
   end
 
   @spec tree_node_callback({%File{}, [tuple()]}, %Run{}) ::

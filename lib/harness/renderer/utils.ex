@@ -37,5 +37,43 @@ defmodule Harness.Renderer.Utils do
   # def green(_text), do: ANSI.green() <> "done" <> ANSI.reset()
   def green(_text), do: ""
   def yellow(text), do: ANSI.yellow() <> "* " <> text <> ANSI.reset()
-  def cyan(text), do: ANSI.cyan() <> text <> ANSI.reset()
+
+  def bright_cyan(text),
+    do: ANSI.cyan() <> ANSI.bright() <> text <> ANSI.reset()
+
+  def bold_blue(text), do: ANSI.blue() <> ANSI.bright() <> text <> ANSI.reset()
+
+  def count_composition(files) do
+    initial = %{
+      directory: 0,
+      regular: 0,
+      symlink: 0
+    }
+
+    Enum.reduce(files, initial, fn %{type: type}, acc ->
+      Map.update!(acc, type, &(&1 + 1))
+    end)
+  end
+
+  def format_composition(composition) do
+    composition
+    |> Enum.map(&format_file_kind/1)
+    |> Enum.reject(&is_nil/1)
+    |> join_compositions()
+  end
+
+  defp format_file_kind({_type, 0}), do: nil
+  defp format_file_kind({:regular, 1}), do: "1 file"
+  defp format_file_kind({:symlink, 1}), do: "1 link"
+  defp format_file_kind({:directory, 1}), do: "1 directory"
+  defp format_file_kind({:regular, count}), do: "#{count} files"
+  defp format_file_kind({:symlink, count}), do: "#{count} links"
+  defp format_file_kind({:directory, count}), do: "#{count} directories"
+
+  defp join_compositions([kind]), do: kind
+  defp join_compositions([kind_a, kind_b]), do: kind_a <> " and " <> kind_b
+
+  defp join_compositions([kind_a, kind_b, kind_c]) do
+    "#{kind_a}, #{kind_b}, and #{kind_c}"
+  end
 end

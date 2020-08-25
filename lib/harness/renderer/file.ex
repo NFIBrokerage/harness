@@ -12,11 +12,13 @@ defmodule Harness.Renderer.File do
   end
 
   def print(%__MODULE__{type: :symlink} = file) do
-    Path.basename(file.output_path) <> Utils.cyan(" -> ") <> file.source_path
+    filename = file.output_path |> Path.basename() |> Utils.bright_cyan()
+
+    filename <> " -> " <> file.source_path
   end
 
-  def print(%__MODULE__{type: :directory} = file) do
-    Path.basename(file.output_path) <> "/"
+  def print(%__MODULE__{type: :directory, output_path: path}) do
+    path |> Path.basename() |> Utils.bold_blue()
   end
 
   def print(%__MODULE__{type: :regular} = file) do

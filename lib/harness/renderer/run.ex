@@ -6,6 +6,7 @@ defmodule Harness.Renderer.Run do
   # - generator module (which generator is producing files)
 
   alias Harness.{Pkg, Renderer}
+  alias Harness.Renderer.Utils
 
   defstruct [
     :output_directory,
@@ -110,5 +111,11 @@ defmodule Harness.Renderer.Run do
       source_path: path,
       type: :directory
     }
+  end
+
+  def file_composition(%__MODULE__{files: files}) do
+    files
+    |> Utils.count_composition()
+    |> Utils.format_composition()
   end
 end
