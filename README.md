@@ -200,3 +200,11 @@ mix archive.uninstall harness --force
 MIX_ENV=prod mix archive.build
 mix archive.install harness-0.0.0.ez --force
 ```
+
+## Installation
+
+Harness is installed as an archive:
+
+```
+mix archive.install hex harness --organization cuatro --force
+```
