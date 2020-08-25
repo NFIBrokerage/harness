@@ -1,9 +1,7 @@
 defmodule Harness.Renderer.File do
   @moduledoc false
 
-  alias Harness.Renderer.{Run, Helpers}
-
-  alias IO.ANSI
+  alias Harness.Renderer.{Run, Helpers, Utils}
 
   # a common interface for being a file
 
@@ -14,7 +12,7 @@ defmodule Harness.Renderer.File do
   end
 
   def print(%__MODULE__{type: :symlink} = file) do
-    Path.basename(file.output_path) <> cyan(" -> ") <> file.source_path
+    Path.basename(file.output_path) <> Utils.cyan(" -> ") <> file.source_path
   end
 
   def print(%__MODULE__{type: :directory} = file) do
@@ -44,9 +42,7 @@ defmodule Harness.Renderer.File do
   end
 
   @spec generate(%Run{}, %__MODULE__{}) :: String.t()
-  def generate(%Run{} = run, %__MODULE__{root?: true}) do
-    cyan(inspect(run.generator_name))
-  end
+  def generate(%Run{}, %__MODULE__{root?: true}), do: ""
 
   def generate(%Run{} = run, %__MODULE__{type: :regular} = file) do
     path = Path.join(run.output_directory, file.output_path)
@@ -62,17 +58,17 @@ defmodule Harness.Renderer.File do
 
     with {:ok, prior_contents} <- File.read(path),
          true <- prior_contents == generated_contents do
-      green("unchanged")
+      Utils.green("unchanged")
     else
       {:error, :enoent} ->
         File.write!(path, generated_contents)
 
-        yellow("written")
+        Utils.yellow("written")
 
       false = _contents_have_been_changed ->
         File.write!(path, generated_contents)
 
-        yellow("changed")
+        Utils.yellow("changed")
     end
   end
 
@@ -80,11 +76,11 @@ defmodule Harness.Renderer.File do
     path = Path.join(run.output_directory, dir.output_path)
 
     if File.dir?(path) do
-      green("exists")
+      Utils.green("exists")
     else
       File.mkdir_p!(path)
 
-      yellow("created")
+      Utils.yellow("created")
     end
   end
 
@@ -94,18 +90,18 @@ defmodule Harness.Renderer.File do
 
     with {:ok, %{type: :symlink}} <- File.lstat(to),
          {:ok, ^from} <- File.read_link(to) do
-      green("exists")
+      Utils.green("exists")
     else
       {:error, :enoent} ->
         File.ln_s!(from, to)
 
-        yellow("linked")
+        Utils.yellow("linked")
 
       {:ok, _other_path} ->
         File.rm!(to)
         File.ln_s!(from, to)
 
-        yellow("re-linked")
+        Utils.yellow("re-linked")
     end
   end
 
@@ -146,8 +142,4 @@ defmodule Harness.Renderer.File do
   defp format_elixir(generated_code, _filename, _any_other_extension) do
     generated_code
   end
-
-  defp green(_text), do: ANSI.green() <> "done" <> ANSI.reset()
-  defp yellow(text), do: ANSI.yellow() <> "* " <> text <> ANSI.reset()
-  defp cyan(text), do: ANSI.cyan() <> text <> ANSI.reset()
 end

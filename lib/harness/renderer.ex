@@ -3,8 +3,8 @@ defmodule Harness.Renderer do
   Functions for rendering a harness package into the current directory
   """
 
-  alias Harness.Manifest
-  alias Harness.Renderer.{Run, File}
+  alias Harness.{Manifest, Tree}
+  alias Harness.Renderer.{Run, File, Utils}
 
   def render(path) when is_binary(path) do
     manifest = Manifest.read(path)
@@ -30,7 +30,7 @@ defmodule Harness.Renderer do
   defp into_tree([], {parent, children, run}), do: {parent, sort(children), run}
 
   defp into_tree([node | rest], {parent, children, run}) do
-    if Path.dirname(node.output_path) == parent.output_path do
+    if child?(node, parent) do
       into_tree(
         rest,
         {parent, [into_tree(rest, {node, [], run}) | children], run}
@@ -38,6 +38,10 @@ defmodule Harness.Renderer do
     else
       into_tree(rest, {parent, children, run})
     end
+  end
+
+  defp child?(node, parent) do
+    Path.dirname(node.output_path) == parent.output_path
   end
 
   defp generate_tree(tree) do
@@ -49,8 +53,16 @@ defmodule Harness.Renderer do
       root?: true
     }
 
-    [{root_node, children, run}]
-    |> Mix.Utils.print_tree(&tree_node_callback/1, format: "pretty")
+    Mix.shell().info("==> #{run.generator_name}")
+    Mix.shell().info("Generating #{length(run.files)} files")
+
+    {time, _return_value} =
+      :timer.tc(fn ->
+        [{root_node, children, run}]
+        |> Tree.print_tree(&tree_node_callback/1, format: "pretty")
+      end)
+
+    Mix.shell().info("Done in #{Utils.format_time(time)}")
   end
 
   @spec tree_node_callback({%File{}, [%File{}], %Run{}}) ::
