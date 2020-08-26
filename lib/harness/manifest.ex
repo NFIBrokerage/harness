@@ -9,10 +9,10 @@ defmodule Harness.Manifest do
                        "manifest version is not compatible with the installed harness " <>
                        "archive. Please update the manifest or the harness archive."
 
-  defstruct generators: [], opts: [], deps: [], manifest_version: nil
+  defstruct generators: [], pkg_config: [], deps: [], manifest_version: nil
 
   @doc false
-  def version, do: "~> 1.0"
+  def version, do: "~> 2.0"
 
   @doc false
   def manifest_file, do: "harness.exs"
@@ -20,22 +20,17 @@ defmodule Harness.Manifest do
   @doc "reads the manifest file from the path"
   def read(path) do
     with false <- File.dir?(path),
-         {:ok, contents} <- File.read(path),
-         {raw_manifest, []} <- Code.eval_string(contents),
-         %__MODULE__{} = manifest <- struct(__MODULE__, raw_manifest),
-         {:version_match, true} <- {:version_match, version_match?(manifest)} do
-      manifest
+         {config, _files} <- Config.Reader.read_imports!(path),
+         {manifest_kwlist, other_config} <- Keyword.pop!(config, :harness),
+         %__MODULE__{} = manifest <- struct(__MODULE__, manifest_kwlist),
+         {:version, true} <- {:version, version_match?(manifest)} do
+      %__MODULE__{manifest | pkg_config: other_config}
     else
-      true = _is_directory ->
+      true ->
         path |> Path.join("harness.exs") |> read()
 
       {:version_match, false} ->
         Mix.raise(@version_match_msg)
-
-      _could_not_be_evaluated ->
-        Mix.raise(
-          "Is there a harness.exs in \"#{Path.dirname(path)}\"? None could be found."
-        )
     end
   end
 

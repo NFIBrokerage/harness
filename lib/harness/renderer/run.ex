@@ -17,13 +17,17 @@ defmodule Harness.Renderer.Run do
     :files
   ]
 
-  def source(generator_module, opts, output_directory) do
+  def source(generator_module, pkg_config, output_directory) do
     pkg_path = Pkg.path(generator_module)
-    generator_config = generator_module.cast(opts) |> flatten_config()
+    otp_app = Pkg.otp_app(generator_module)
+    this_pkg_config = Keyword.get(pkg_config, otp_app, [])
+
+    generator_config =
+      this_pkg_config |> generator_module.cast() |> flatten_config()
 
     %__MODULE__{
       output_directory: output_directory,
-      generator_name: Pkg.otp_app(generator_module),
+      generator_name: otp_app,
       generator_module: generator_module,
       generator_config: generator_config,
       package_directory: pkg_path

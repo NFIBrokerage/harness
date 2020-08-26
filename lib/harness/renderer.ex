@@ -10,7 +10,7 @@ defmodule Harness.Renderer do
     manifest = Manifest.read(path)
 
     manifest.generators
-    |> Enum.map(&Run.source(&1, manifest.opts, path))
+    |> Enum.map(&Run.source(&1, manifest.pkg_config, path))
     |> Enum.map(&Run.source_files/1)
     |> Enum.map(&Run.expand_paths/1)
     |> Enum.each(&render/1)
@@ -84,7 +84,7 @@ defmodule Harness.Renderer do
     manifest = Manifest.read(path)
 
     manifest.generators
-    |> Enum.map(&Run.source(&1, manifest.opts, path))
+    |> Enum.map(&Run.source(&1, manifest.pkg_config, path))
     |> Enum.map(&Run.source_files/1)
     |> Enum.map(&Run.expand_paths/1)
     |> Enum.each(&clean/1)
