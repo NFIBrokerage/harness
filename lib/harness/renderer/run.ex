@@ -59,8 +59,8 @@ defmodule Harness.Renderer.Run do
 
     directories_for_links =
       links
-      |> Enum.map(&directories_for_link/1)
-      |> List.flatten()
+      |> Enum.flat_map(&directories_for_link/1)
+      |> Enum.uniq()
 
     %__MODULE__{run | files: files ++ directories_for_links ++ links}
   end
