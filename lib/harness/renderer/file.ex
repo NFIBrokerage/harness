@@ -53,7 +53,10 @@ defmodule Harness.Renderer.File do
       file.source_path
       |> EEx.eval_file(
         [assigns: run.generator_config],
-        functions: [{Helpers, Helpers.__info__(:functions)}]
+        functions: [
+          {Helpers, Helpers.__info__(:functions)},
+          {Elixir.Kernel, Kernel.__info__(:functions)}
+        ]
       )
       # this shouldn't be necessary but it prevents a strange dialyzer warn
       |> format_elixir(path, Path.extname(file.source_path))
