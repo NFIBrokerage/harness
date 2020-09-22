@@ -160,7 +160,7 @@ jobs:
         curl
         -X POST
         -H 'Content-type:application/json'
-        -d "{\"text\":\"hex package published for $REPOSITORY $(git tag -ln $TAG)\"}"
+        -d "{\"text\":\":hexpm: package published for $REPOSITORY $(git tag -ln $TAG)\"}"
         $SLACK_WEBHOOK
       env:
         SLACK_WEBHOOK: ${{ secrets.OPS_CHANNEL_SLACK_WEBHOOK }}
