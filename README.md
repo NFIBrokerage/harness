@@ -4,7 +4,8 @@ A command line tool for harnessing Elixir boilerplate.
 
 ![Actions CI](https://github.com/NFIBrokerage/harness/workflows/Actions%20CI/badge.svg)
 
-See the hex guides for detail documentation.
+See the [hex guides](https://cuatro.hexdocs.pm/harness/welcome.html#content)
+for detail documentation.
 
 ## Development
 
