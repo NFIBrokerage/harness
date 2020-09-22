@@ -61,13 +61,12 @@ defmodule Harness.MixProject do
       name: "harness",
       files: ~w(lib .formatter.exs mix.exs README.md .version),
       licenses: [],
-      organization: "cuatro",
       links: %{"GitHub" => "https://github.com/NFIBrokerage/harness"}
     ]
   end
 
   defp description do
-    "harness the boilerplate!"
+    "A command line tool for harnessing Elixir boilerplate"
   end
 
   defp docs do

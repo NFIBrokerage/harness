@@ -151,7 +151,7 @@ jobs:
         prerelease: false
 
     - name: Publish library
-      run: mix hex.publish --yes --organization cuatro
+      run: mix hex.publish --yes
       env:
         HEX_API_KEY: ${{ secrets.HEX_PUBLISH_KEY }}
 
