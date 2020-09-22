@@ -1,10 +1,10 @@
 defmodule Mix.Tasks.Harness do
-  @shortdoc "Generates harness packages into a path"
+  @shortdoc "renders harness packages into the current directory"
   @moduledoc """
-  Generates harness packages into the specified path
+  Renders harness packages into the current directory
 
-  Configuration of which files to generate and link is according to the path's
-  harness manifest (`harness.exs`).
+  Configuration of which files to generate and link is according to the current
+  directory's harness manifest (`harness.exs`).
   """
 
   use Mix.Task
