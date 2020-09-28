@@ -27,3 +27,13 @@ Harness is installed as an archive:
 ```
 mix archive.install hex harness --force
 ```
+
+Harness depends on elixir 1.9+. If you use asdf:
+
+```
+asdf install erlang 22.3
+asdf install elixir 1.10.4-otp-22
+asdf global erlang 22.3
+asdf global elixir 1.10.4-otp-22
+mix archive.install hex harness --force
+```
