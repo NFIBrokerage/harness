@@ -143,7 +143,7 @@ defmodule Harness.Renderer.File do
     formatted_code =
       generated_code
       |> to_string()
-      |> Code.format_string!(file: filename)
+      |> Code.format_string!(file: filename, line_length: 80)
       |> to_string()
 
     formatted_code <> "\n"
