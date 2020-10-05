@@ -77,7 +77,8 @@ defmodule Harness.MixProject do
         "guides/Welcome.md",
         "guides/About.md",
         "guides/Getting Started.md",
-        "guides/Manifests.md"
+        "guides/Manifests.md",
+        "guides/Mix Dependencies.md"
       ],
       groups_for_extras: [
         Guides: Path.wildcard("guides/*.md")
