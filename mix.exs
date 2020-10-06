@@ -42,7 +42,9 @@ defmodule Harness.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   def application do
-    []
+    [
+      extra_applications: [:eex]
+    ]
   end
 
   defp deps do
