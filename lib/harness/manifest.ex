@@ -69,6 +69,10 @@ defmodule Harness.Manifest do
 
   defp fake_mix_project do
     [
+      # this :app part isn't in Mix.Project.default_config/0, but it fixes an
+      # error in elixir 1.11+ about needing an :app to access the build path
+      # for a mix project
+      app: :harness,
       aliases: [],
       build_embedded: false,
       build_per_environment: true,
