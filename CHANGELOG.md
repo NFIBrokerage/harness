@@ -6,6 +6,15 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.2.7 - 2020-10-15
+
+### Fixed
+
+- Misc. documentation fixes including:
+    - a broken link to the Getting Started guide
+    - addition of GitHub and Changelog links to hex page
+    - default documentation page is set to the README
+
 ## 0.2.6 - 2020-10-12
 
 ### Fixed
