@@ -6,6 +6,12 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.2.8 - 2020-10-15
+
+### Added
+
+- Added a `mix harness.update` task that mimics `mix deps.update`
+
 ## 0.2.7 - 2020-10-15
 
 ### Fixed
@@ -99,7 +105,7 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 - The `Harness.Cache` module has been removed
     - now harness caches packages by downloading them to the `deps/` directory
-    - this behaviour mimicks `mix`
+    - this behaviour mimics `mix`
 
 ## 0.0.0 - 2020-08-24
 
