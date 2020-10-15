@@ -3,6 +3,7 @@ defmodule Harness.MixProject do
 
   @version_file Path.join(__DIR__, ".version")
   @external_resource @version_file
+  @source_url "https://github.com/NFIBrokerage/harness"
 
   def project do
     [
@@ -22,7 +23,6 @@ defmodule Harness.MixProject do
       test_coverage: [tool: ExCoveralls],
       package: package(),
       description: description(),
-      source_url: "https://github.com/NFIBrokerage/harness",
       name: "Harness",
       docs: docs()
     ]
@@ -63,7 +63,10 @@ defmodule Harness.MixProject do
       name: "harness",
       files: ~w(lib .formatter.exs mix.exs README.md .version),
       licenses: [],
-      links: %{"GitHub" => "https://github.com/NFIBrokerage/harness"}
+      links: %{
+        "GitHub" => @source_url,
+        "Changelog" => "#{@source_url}/blob/main/CHANGELOG.md"
+      }
     ]
   end
 
@@ -73,12 +76,15 @@ defmodule Harness.MixProject do
 
   defp docs do
     [
+      main: "readme",
+      source_url: @source_url,
       deps: [],
       extras: [
+        "README.md",
         "CHANGELOG.md",
         "guides/Welcome.md",
         "guides/About.md",
-        "guides/Getting Started.md",
+        "guides/GettingStarted.md",
         "guides/Manifests.md"
       ],
       groups_for_extras: [

@@ -1,8 +1,8 @@
 # Harness
 
-A command line tool for harnessing Elixir boilerplate.
-
 ![Actions CI](https://github.com/NFIBrokerage/harness/workflows/Actions%20CI/badge.svg)
+
+A command line tool for harnessing Elixir boilerplate.
 
 See the [hex guides](https://hexdocs.pm/harness/welcome.html#content)
 for detail documentation.
@@ -28,7 +28,7 @@ Harness is installed as an archive:
 mix archive.install hex harness --force
 ```
 
-Harness depends on elixir 1.9+. If you use asdf:
+Harness depends on elixir 1.9+. If you use `asdf`:
 
 ```
 asdf install erlang 22.3
