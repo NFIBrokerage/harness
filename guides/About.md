@@ -88,4 +88,4 @@ set of rules or guidelines to use to form a project.
 
 For harness, this is the `harness.exs`.
 
-Enough of the theory though, let's [Get Started!](guides/Getting Started.md)
+Enough of the theory though, let's [Get Started!](guides/GettingStarted.md)
