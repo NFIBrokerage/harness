@@ -29,7 +29,7 @@ defmodule Harness.Manifest do
       true ->
         path |> Path.join("harness.exs") |> read()
 
-      {:version_match, false} ->
+      {:version, false} ->
         Mix.raise(@version_match_msg)
     end
   end
