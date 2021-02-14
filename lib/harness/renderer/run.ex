@@ -85,6 +85,16 @@ defmodule Harness.Renderer.Run do
     %{run | files: expanded_files}
   end
 
+  def skip_files(%__MODULE__{} = run, patterns) do
+    files =
+      run.files
+      |> Enum.reject(fn file ->
+        Enum.any?(patterns, &Regex.match?(&1, file.output_path))
+      end)
+
+    %{run | files: files}
+  end
+
   defp substitute_vars(path, flat_config) do
     Enum.reduce(flat_config, path, fn {config_key, config_val}, acc ->
       if String.contains?(path, "$#{config_key}$") do

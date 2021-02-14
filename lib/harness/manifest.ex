@@ -9,7 +9,11 @@ defmodule Harness.Manifest do
                        "manifest version is not compatible with the installed harness " <>
                        "archive. Please update the manifest or the harness archive."
 
-  defstruct generators: [], pkg_config: [], deps: [], manifest_version: nil
+  defstruct generators: [],
+            pkg_config: [],
+            deps: [],
+            skip_files: [],
+            manifest_version: nil
 
   @doc false
   def version, do: "~> 2.0"

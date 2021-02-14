@@ -6,6 +6,15 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.3.0 - 2021-02-??
+
+### Added
+
+- Added a `:skip_files` key to the configuration of a manifest, allowing one
+  to provide a list of regex which will be checked against while sourcing files.
+  Any files found to match any of the regex will be excluded from generation.
+    - this allows a service author to 'take the reins' for that file
+
 ## 0.2.9 - 2020-11-02
 
 ### Fixed
