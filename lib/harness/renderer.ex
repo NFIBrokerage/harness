@@ -13,6 +13,7 @@ defmodule Harness.Renderer do
     |> Enum.map(&Run.source(&1, manifest.pkg_config, path))
     |> Enum.map(&Run.source_files/1)
     |> Enum.map(&Run.expand_paths/1)
+    |> Enum.map(&Run.skip_files(&1, manifest.skip_files))
     |> Enum.each(&render/1)
   end
 
