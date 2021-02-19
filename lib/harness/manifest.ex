@@ -5,14 +5,11 @@ defmodule Harness.Manifest do
 
   alias Mix.ProjectStack
 
-  @version_match_msg "Could not parse the harness.exs manifest because the " <>
-                       "manifest version is not compatible with the installed harness " <>
-                       "archive. Please update the manifest or the harness archive."
-
   defstruct generators: [],
             pkg_config: [],
             deps: [],
             skip_files: [],
+            version: nil,
             manifest_version: nil
 
   @doc false
@@ -27,14 +24,12 @@ defmodule Harness.Manifest do
          {config, _files} <- Config.Reader.read_imports!(path),
          {manifest_kwlist, other_config} <- Keyword.pop!(config, :harness),
          %__MODULE__{} = manifest <- struct(__MODULE__, manifest_kwlist),
-         {:version, true} <- {:version, version_match?(manifest)} do
+         :ok <- manifest_version_match!(manifest),
+         :ok <- harness_version_match!(manifest) do
       %__MODULE__{manifest | pkg_config: other_config}
     else
       true ->
         path |> Path.join("harness.exs") |> read()
-
-      {:version, false} ->
-        Mix.raise(@version_match_msg)
     end
   end
 
@@ -96,9 +91,58 @@ defmodule Harness.Manifest do
     ]
   end
 
-  defp version_match?(%{manifest_version: nil}), do: false
+  defp manifest_version_match!(%{manifest_version: manifest_version}) do
+    if manifest_version && Version.match?(manifest_version, version()) do
+      :ok
+    else
+      [
+        "Could not parse the harness.exs manifest because the ",
+        "manifest version is not compatible with the installed harness ",
+        "archive. Please update the manifest or the harness archive."
+      ]
+      |> IO.iodata_to_binary()
+      |> Mix.raise()
+    end
+  end
 
-  defp version_match?(manifest) do
-    Version.match?(manifest.manifest_version, version())
+  defp harness_version_match!(%{version: version}) when is_binary(version) do
+    if Version.match?(Harness.version(), version) do
+      :ok
+    else
+      [
+        "The installed version of harness (",
+        Harness.version(),
+        ") does not ",
+        "match the manifest's requirement (",
+        version,
+        "). Please update ",
+        "either the harness archive or the :version key in the manifest ",
+        "configuration."
+      ]
+      |> IO.iodata_to_binary()
+      |> Mix.raise()
+    end
+  end
+
+  defp harness_version_match!(%{version: nil}) do
+    [
+      :reset,
+      "Could not find a ",
+      :cyan,
+      ":version",
+      :reset,
+      " key in the manifest. Manifests must declare a ",
+      :cyan,
+      ":version",
+      :reset,
+      " key which specifies the versions of ",
+      "harness with which the manifest is compatible.",
+      ?\n,
+      ?\n,
+      "    config :harness, version: \"~> 0.3\""
+    ]
+    |> Mix.shell().error()
+
+    :ok
   end
 end
