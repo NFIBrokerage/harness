@@ -22,7 +22,7 @@ defmodule Harness.Pkg do
   @doc """
   A list of symlinks to create from the .harness directory to project root.
   """
-  @callback links(t()) :: [String.t()]
+  @callback links(t()) :: [Path.t()]
 
   @doc """
   A list of hard links to create from the .harness directory to project root.
