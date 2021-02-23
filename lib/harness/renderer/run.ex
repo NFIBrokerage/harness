@@ -58,9 +58,13 @@ defmodule Harness.Renderer.Run do
       |> Enum.map(&Renderer.File.source(&1, run, :symlink))
 
     hard_links =
-      run.generator_config
-      |> run.generator_module.hard_links()
-      |> Enum.map(&Renderer.File.source(&1, run, :hard_link))
+      if function_exported?(run.generator_module, :hard_link, 1) do
+        run.generator_config
+        |> run.generator_module.hard_links()
+        |> Enum.map(&Renderer.File.source(&1, run, :hard_link))
+      else
+        []
+      end
 
     directories_for_links =
       (symlinks ++ hard_links)
