@@ -52,30 +52,38 @@ defmodule Harness.Renderer.Run do
       |> Enum.map(&Renderer.File.source(&1, run, File.lstat!(&1).type))
       |> Enum.reject(&(&1.output_path == Path.join(".harness", "pkg.exs")))
 
-    symlinks =
-      run.generator_config
-      |> run.generator_module.links()
-      |> Enum.map(&Renderer.File.source(&1, run, :symlink))
-
-    hard_links =
-      if function_exported?(run.generator_module, :hard_link, 1) do
+    links =
+      if function_exported?(run.generator_module, :links, 1) do
         run.generator_config
-        |> run.generator_module.hard_links()
-        |> Enum.map(&Renderer.File.source(&1, run, :hard_link))
+        |> run.generator_module.links()
+        |> Enum.map(&normalize_link/1)
+        |> Enum.map(fn {path, type} -> Renderer.File.source(path, run, type) end)
       else
         []
       end
 
     directories_for_links =
-      (symlinks ++ hard_links)
+      links
       |> Enum.flat_map(&directories_for_link/1)
       |> Enum.uniq()
 
     %__MODULE__{
       run
-      | files: files ++ directories_for_links ++ symlinks ++ hard_links
+      | files: files ++ directories_for_links ++ links
     }
     |> IO.inspect(label: "Harness.Renderer.Run.source_files end")
+  end
+
+  defp normalize_link(path) when is_binary(path) do
+    normalize_link({path, :sym})
+  end
+
+  defp normalize_link({path, :sym}) do
+    {path, :symlink}
+  end
+
+  defp normalize_link({path, :hard}) do
+    {path, :hard_link}
   end
 
   defp flatten_config(%{__struct__: _} = config) do

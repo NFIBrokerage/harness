@@ -17,6 +17,12 @@ defmodule Harness.Renderer.File do
     filename <> " -> " <> file.source_path
   end
 
+  def print(%__MODULE__{type: :hard_link} = file) do
+    filename = file.output_path |> Path.basename() |> Utils.bright_cyan()
+
+    filename <> " => " <> file.source_path
+  end
+
   def print(%__MODULE__{type: :directory, output_path: path}) do
     path |> Path.basename() |> Utils.bold_blue()
   end
@@ -25,20 +31,11 @@ defmodule Harness.Renderer.File do
     Path.basename(file.output_path)
   end
 
-  def source(path, _path, :symlink) do
+  def source(path, _path, type) when type in [:symlink, :hard_link] do
     %__MODULE__{
       source_path: link_source_path(path),
       output_path: path,
-      type: :symlink
-    }
-  end
-
-  # TODO refactor duplication
-  def source(path, _path, :hard_link) do
-    %__MODULE__{
-      source_path: link_source_path(path),
-      output_path: path,
-      type: :hard_link
+      type: type
     }
   end
 

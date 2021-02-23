@@ -44,14 +44,15 @@ defmodule Harness.Renderer.Utils do
   def bold_blue(text), do: ANSI.blue() <> ANSI.bright() <> text <> ANSI.reset()
 
   def count_composition(files) do
-    initial = %{
+    initial = [
       directory: 0,
       regular: 0,
-      symlink: 0
-    }
+      symlink: 0,
+      hard_link: 0
+    ]
 
     Enum.reduce(files, initial, fn %{type: type}, acc ->
-      Map.update!(acc, type, &(&1 + 1))
+      Keyword.update!(acc, type, &(&1 + 1))
     end)
   end
 
@@ -64,10 +65,12 @@ defmodule Harness.Renderer.Utils do
 
   defp format_file_kind({_type, 0}), do: nil
   defp format_file_kind({:regular, 1}), do: "1 file"
-  defp format_file_kind({:symlink, 1}), do: "1 link"
+  defp format_file_kind({:symlink, 1}), do: "1 symlink"
+  defp format_file_kind({:hard_link, 1}), do: "1 hard link"
   defp format_file_kind({:directory, 1}), do: "1 directory"
   defp format_file_kind({:regular, count}), do: "#{count} files"
-  defp format_file_kind({:symlink, count}), do: "#{count} links"
+  defp format_file_kind({:symlink, count}), do: "#{count} symlinks"
+  defp format_file_kind({:hard_link, count}), do: "#{count} hard links"
   defp format_file_kind({:directory, count}), do: "#{count} directories"
 
   defp join_compositions([kind]), do: kind
@@ -75,5 +78,9 @@ defmodule Harness.Renderer.Utils do
 
   defp join_compositions([kind_a, kind_b, kind_c]) do
     "#{kind_a}, #{kind_b}, and #{kind_c}"
+  end
+
+  defp join_compositions([kind_a, kind_b, kind_c, kind_d]) do
+    "#{kind_a}, #{kind_b}, #{kind_c}, and #{kind_d}"
   end
 end
