@@ -24,7 +24,12 @@ defmodule Harness.Pkg do
   """
   @callback links(t()) :: [String.t()]
 
-  defstruct [:path, :module, :config, :files, :name, :links]
+  @doc """
+  A list of hard links to create from the .harness directory to project root.
+  """
+  @callback hard_links(t()) :: [String.t()]
+
+  defstruct [:path, :module, :config, :files, :name, :links, :hard_links]
 
   def path(generator) do
     otp_app = otp_app(generator)

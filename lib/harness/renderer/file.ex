@@ -33,6 +33,15 @@ defmodule Harness.Renderer.File do
     }
   end
 
+  # TODO refactor duplication
+  def source(path, _path, :hard_link) do
+    %__MODULE__{
+      source_path: link_source_path(path),
+      output_path: path,
+      type: :hard_link
+    }
+  end
+
   def source(path, %Run{package_directory: pkg_path}, type) do
     file_relative_to_project = String.trim_leading(path, pkg_path)
 
@@ -107,6 +116,30 @@ defmodule Harness.Renderer.File do
         File.ln_s!(from, to)
 
         Utils.yellow("re-linked")
+    end
+  end
+
+  def generate(%Run{} = run, %__MODULE__{type: :hard_link} = link) do
+    to = Path.join(run.output_directory, link.output_path)
+    from = link.source_path
+
+    # can't determine existence of the hard link explicitly since it's
+    # indistiguishable from the native file (i think) unless we want to make
+    # assumptions about the link count returned by `File.stat`. (`links: 1`
+    # implies it is *not* currently a hard link from .harness)
+    #
+    # what if they harness ci, then destroy the hard link and drop in their own?
+    # do we need to force a re-link?
+    # could compare the contents of `from` and `to` similar to how the
+    # `{type: :regular}` generator above does???
+    with {:ok, %{type: :regular}} <- File.stat(to) do
+      Utils.green("exists")
+    else
+      {:error, :enoent} ->
+        # TODO can't hard link a dir so will need some logic to mkdirs here
+        File.ln!(from, to)
+
+        Utils.yellow("hard linked")
     end
   end
 

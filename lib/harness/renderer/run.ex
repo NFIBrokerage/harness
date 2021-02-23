@@ -52,17 +52,26 @@ defmodule Harness.Renderer.Run do
       |> Enum.map(&Renderer.File.source(&1, run, File.lstat!(&1).type))
       |> Enum.reject(&(&1.output_path == Path.join(".harness", "pkg.exs")))
 
-    links =
+    symlinks =
       run.generator_config
       |> run.generator_module.links()
       |> Enum.map(&Renderer.File.source(&1, run, :symlink))
 
+    hard_links =
+      run.generator_config
+      |> run.generator_module.hard_links()
+      |> Enum.map(&Renderer.File.source(&1, run, :hard_link))
+
     directories_for_links =
-      links
+      (symlinks ++ hard_links)
       |> Enum.flat_map(&directories_for_link/1)
       |> Enum.uniq()
 
-    %__MODULE__{run | files: files ++ directories_for_links ++ links}
+    %__MODULE__{
+      run
+      | files: files ++ directories_for_links ++ symlinks ++ hard_links
+    }
+    |> IO.inspect(label: "Harness.Renderer.Run.source_files end")
   end
 
   defp flatten_config(%{__struct__: _} = config) do
@@ -105,7 +114,8 @@ defmodule Harness.Renderer.Run do
     end)
   end
 
-  defp directories_for_link(%Renderer.File{output_path: path, type: :symlink}) do
+  defp directories_for_link(%Renderer.File{output_path: path, type: type})
+       when type in [:symlink, :hard_link] do
     directories_for_link(path, [])
   end
 

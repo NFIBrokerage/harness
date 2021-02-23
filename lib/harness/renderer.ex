@@ -77,8 +77,9 @@ defmodule Harness.Renderer do
   defp sort(children) do
     children
     |> Enum.reverse()
-    # puts all the symlinks last
+    # puts all the links last
     |> Enum.sort_by(fn {node, _children} -> node.type == :symlink end)
+    |> Enum.sort_by(fn {node, _children} -> node.type == :hard_link end)
   end
 
   def clean(path) when is_binary(path) do
