@@ -26,7 +26,7 @@ defmodule Harness.Pkg do
   link can be a tuple with the path and an atom declaring the type of link as
   `:sym` or `:hard`.
   """
-  @callback links(t()) :: [Path.t() | {Path.t(), atom}]
+  @callback links(t()) :: [Path.t() | {Path.t(), :sym | :hard}]
 
   @optional_callbacks links: 1
 
