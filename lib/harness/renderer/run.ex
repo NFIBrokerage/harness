@@ -71,7 +71,6 @@ defmodule Harness.Renderer.Run do
       run
       | files: files ++ directories_for_links ++ links
     }
-    |> IO.inspect(label: "Harness.Renderer.Run.source_files end")
   end
 
   defp normalize_link(path) when is_binary(path) do

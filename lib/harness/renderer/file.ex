@@ -31,11 +31,19 @@ defmodule Harness.Renderer.File do
     Path.basename(file.output_path)
   end
 
-  def source(path, _path, type) when type in [:symlink, :hard_link] do
+  def source(path, _path, :symlink) do
     %__MODULE__{
-      source_path: link_source_path(path),
+      source_path: symlink_source_path(path),
       output_path: path,
-      type: type
+      type: :symlink
+    }
+  end
+
+  def source(path, _path, :hard_link) do
+    %__MODULE__{
+      source_path: Path.join(".harness", path),
+      output_path: path,
+      type: :hard_link
     }
   end
 
@@ -120,23 +128,26 @@ defmodule Harness.Renderer.File do
     to = Path.join(run.output_directory, link.output_path)
     from = link.source_path
 
-    # can't determine existence of the hard link explicitly since it's
-    # indistiguishable from the native file (i think) unless we want to make
-    # assumptions about the link count returned by `File.stat`. (`links: 1`
-    # implies it is *not* currently a hard link from .harness)
+    # There's no apparent reliable way to determine if an existing file at `to`
+    # is the hard link previously made by harness. Therefore, harness will
+    # always delete the `to` file and recreate the hard link. The `skip_files`
+    # config is available if the user wants to customize the contents of the
+    # `to` file.
     #
-    # what if they harness ci, then destroy the hard link and drop in their own?
-    # do we need to force a re-link?
-    # could compare the contents of `from` and `to` similar to how the
-    # `{type: :regular}` generator above does???
+    # (We could infer that the desired hard link already exists if the contents
+    # of the two files are identical and the number of links reported by
+    # `File.stat` is 2, but that's not entirely reliable, so doesn't seem
+    # worthwhile since always re-linking is ok.)
     with {:ok, %{type: :regular}} <- File.stat(to) do
-      Utils.green("exists")
+      File.rm!(to)
+      File.ln!(from, to)
+
+      Utils.yellow("re-linked")
     else
       {:error, :enoent} ->
-        # TODO can't hard link a dir so will need some logic to mkdirs here
         File.ln!(from, to)
 
-        Utils.yellow("hard linked")
+        Utils.yellow("linked")
     end
   end
 
@@ -153,7 +164,7 @@ defmodule Harness.Renderer.File do
   # this path is interesting to generate because you need to preceed the path
   # with a number of ../'s equal to the directory depth of the file being
   # generated
-  defp link_source_path(link_path) do
+  defp symlink_source_path(link_path) do
     number_of_dot_dots =
       link_path
       |> Path.split()
