@@ -76,11 +76,8 @@ defmodule Harness.Renderer.Utils do
   defp join_compositions([kind]), do: kind
   defp join_compositions([kind_a, kind_b]), do: kind_a <> " and " <> kind_b
 
-  defp join_compositions([kind_a, kind_b, kind_c]) do
-    "#{kind_a}, #{kind_b}, and #{kind_c}"
-  end
-
-  defp join_compositions([kind_a, kind_b, kind_c, kind_d]) do
-    "#{kind_a}, #{kind_b}, #{kind_c}, and #{kind_d}"
+  defp join_compositions(compositions) do
+    {first_elements, [final_element]} = Enum.split(compositions, -1)
+    Enum.join(first_elements, ", ") <> ", and " <> final_element
   end
 end
