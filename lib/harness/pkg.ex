@@ -20,9 +20,15 @@ defmodule Harness.Pkg do
   @callback cast(opts :: Keyword.t()) :: t()
 
   @doc """
-  A list of symlinks to create from the .harness directory to project root.
+  A list of links to create from the .harness directory to project root.
+
+  The link can be a string path which will be created as a symlink or the
+  link can be a tuple with the path and an atom declaring the type of link as
+  `:sym` or `:hard`.
   """
-  @callback links(t()) :: [String.t()]
+  @callback links(t()) :: [Path.t() | {Path.t(), :sym | :hard}]
+
+  @optional_callbacks links: 1
 
   defstruct [:path, :module, :config, :files, :name, :links]
 
