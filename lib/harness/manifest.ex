@@ -18,6 +18,12 @@ defmodule Harness.Manifest do
   @doc false
   def manifest_file, do: "harness.exs"
 
+  @doc false
+  def hash_file, do: ".manifest.hash"
+
+  @doc false
+  def hash(term), do: term |> :erlang.phash2() |> to_string
+
   @doc "reads the manifest file from the path"
   def read(path) do
     with false <- File.dir?(path),
@@ -64,6 +70,33 @@ defmodule Harness.Manifest do
     deps
     |> Enum.map(fn %Mix.Dep{app: app} -> app end)
     |> Enum.each(&Application.ensure_started/1)
+  end
+
+  @doc """
+  Verifies that the generated files in .harness match the configuration of
+  the harness.exs
+  """
+  @doc since: "0.6.0"
+  def verify(path) do
+    expected_manifest_hash = path |> read() |> hash()
+
+    with dot_harness_dir = Path.join(path, ".harness"),
+         {_, true} <- {:harness_dir?, File.dir?(dot_harness_dir)},
+         hash_file_path = Path.join(dot_harness_dir, hash_file()),
+         {:ok, contents} <- File.read(hash_file_path),
+         {_, true} <-
+           {:hash_equals?, String.trim(contents) == expected_manifest_hash} do
+      :ok
+    else
+      {:harness_dir?, false} ->
+        {:error, ".harness does not exist"}
+
+      {:error, file_read_error} ->
+        {:error, "could not read .harness/#{hash_file()}: #{file_read_error}"}
+
+      {:hash_equals?, false} ->
+        {:error, "manifest hash is out of date"}
+    end
   end
 
   defp fake_mix_project do

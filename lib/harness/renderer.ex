@@ -9,6 +9,13 @@ defmodule Harness.Renderer do
   def render(path) when is_binary(path) do
     manifest = Manifest.read(path)
 
+    Elixir.File.mkdir_p!(".harness")
+
+    Elixir.File.write!(
+      Path.join(".harness", Manifest.hash_file()),
+      Manifest.hash(manifest)
+    )
+
     manifest.generators
     |> Enum.map(&Run.source(&1, manifest.pkg_config, path))
     |> Enum.map(&Run.source_files/1)

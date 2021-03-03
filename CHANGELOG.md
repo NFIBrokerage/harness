@@ -6,6 +6,13 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.6.0 - 2021-03-03
+
+### Added
+
+- Added a `mix harness.check` task which checks that the harnessed files are
+  up to date
+
 ## 0.5.0 - 2021-02-24
 
 ### Added
