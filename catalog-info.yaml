@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: harness
+  description: >-
+   A mix archive for harnessing Elixir boilerplate. Harness generates templated
+   files locally and versions them, allowing you to semantically version your
+   service chasses.
+  annotations:
+    github.com/project-slug: NFIBrokerage/harness
+    backstage.io/source-ref: https://github.com/NFIBrokerage/harness
+    backstage.io/github-actions-id: https://github.com/NFIBrokerage/harness
+  tags:
+  - config
+  - eex
+  - mix
+  - templates
+spec:
+  type: library
+  lifecycle: experimental
+  owner: team-baemax
+  system: platform
