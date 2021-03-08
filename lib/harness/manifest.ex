@@ -28,7 +28,7 @@ defmodule Harness.Manifest do
   def read(path) do
     with false <- File.dir?(path),
          {config, _files} <- Config.Reader.read_imports!(path),
-         {manifest_kwlist, other_config} <- Keyword.pop!(config, :harness),
+         {manifest_kwlist, other_config} <- Keyword.pop(config, :harness),
          %__MODULE__{} = manifest <- struct(__MODULE__, manifest_kwlist),
          :ok <- manifest_version_match!(manifest),
          :ok <- harness_version_match!(manifest) do
