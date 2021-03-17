@@ -19,4 +19,4 @@ spec:
   type: library
   lifecycle: experimental
   owner: team-baemax
-  system: platform
+  system: service-chassis
