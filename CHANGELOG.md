@@ -6,6 +6,14 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.6.2 - 2021-03-17
+
+### Fixed
+
+- Trimmed strings in the `inspect_or_interpolate/1` helper
+    - this prevents formatting failures when a template does not expect a
+      newline and a manifest declares a value with triple-quotes
+
 ## 0.6.1 - 2021-03-08
 
 ### Fixed

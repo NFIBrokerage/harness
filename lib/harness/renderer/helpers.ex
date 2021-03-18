@@ -19,6 +19,6 @@ defmodule Harness.Renderer.Helpers do
   If the item is a binary, it is interpolated. Else, it is inspected with
   `Kernel.inspect/2` and then interpolated.
   """
-  def inspect_or_interpolate(item) when is_binary(item), do: item
+  def inspect_or_interpolate(item) when is_binary(item), do: String.trim(item)
   def inspect_or_interpolate(item), do: Kernel.inspect(item, limit: :infinity)
 end
