@@ -5,20 +5,21 @@ defmodule Mix.Tasks.Harness do
 
   Configuration of which files to generate and link is according to the current
   directory's harness manifest (`harness.exs`).
+
+  ## Command line options
+
+    * `--no-compile` - skips the compilation of harness packages
+    * `--no-deps-check` - skips a check for out of date dependencies
   """
 
   use Mix.Task
 
-  alias Harness.{Manifest, Renderer}
-
   @impl Mix.Task
-  def run(_args) do
+  def run(args) do
     path = "."
 
-    Mix.Task.run("harness.compile", [path])
+    Mix.Task.run("harness.loadpaths", args)
 
-    Manifest.load(path)
-
-    Renderer.render(path)
+    Harness.Renderer.render(path)
   end
 end
