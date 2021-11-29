@@ -20,6 +20,12 @@ defmodule Mix.Tasks.Harness do
 
     Mix.Task.run("harness.loadpaths", args)
 
+    # this is redundant past elixir 1.11+, can be removed when harness
+    # requires that as a minimum
+    unless "--no-compile" in args do
+      Mix.Task.run("harness.compile", [path])
+    end
+
     Harness.Renderer.render(path)
   end
 end
