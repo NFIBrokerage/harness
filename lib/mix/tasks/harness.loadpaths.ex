@@ -39,6 +39,8 @@ defmodule Mix.Tasks.Harness.Loadpaths do
 
       true ->
         Mix.Tasks.Deps.Compile.compile(compile)
+
+        compile
         |> Enum.map(& &1.app)
         |> Mix.Dep.filter_by_name(Mix.Dep.load_and_cache())
         |> Enum.filter(&(not Mix.Dep.ok?(&1)))
