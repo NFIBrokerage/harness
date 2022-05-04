@@ -7,6 +7,9 @@ A command line tool for harnessing Elixir boilerplate.
 See the [hex guides](https://hexdocs.pm/harness/welcome.html#content)
 for detail documentation.
 
+Looking for an example package? [`harness_dotfiles`][harness-dotfiles]
+should serve as a minimal example to get you going.
+
 ## Development
 
 Interested in developing harness? Currently it's in a tight spot because it
@@ -37,3 +40,5 @@ asdf global erlang 22.3
 asdf global elixir 1.10.4-otp-22
 mix archive.install hex harness --force
 ```
+
+[harness-dotfiles]: https://github.com/NFIBrokerage/harness_dotfiles
