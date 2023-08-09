@@ -24,6 +24,23 @@ defmodule Harness.Manifest do
   @doc false
   def hash(term), do: term |> :erlang.phash2() |> to_string
 
+  @doc "gets the path of the archive itself"
+  def archive_path do
+    current_name = Mix.Local.name_for(:archives, Mix.Project.config())
+
+    current_name
+    |> Mix.Tasks.Archive.Install.find_previous_versions()
+    |> case do
+      [found | _] ->
+        found
+
+      [] ->
+        [Mix.path_for(:archives), Mix.Local.archive_name(current_name)]
+        |> Path.join()
+    end
+    |> Mix.Local.archive_ebin()
+  end
+
   @doc "reads the manifest file from the path"
   def read(path) do
     with false <- File.dir?(path),
@@ -65,6 +82,7 @@ defmodule Harness.Manifest do
     :ok =
       deps
       |> Enum.flat_map(&Mix.Dep.load_paths/1)
+      |> (&[archive_path() | &1]).()
       |> Enum.each(&Code.append_path/1)
 
     deps

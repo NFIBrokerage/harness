@@ -26,6 +26,8 @@ defmodule Mix.Tasks.Harness do
       Mix.Task.run("harness.compile", [path])
     end
 
+    Harness.Manifest.load(path)
+
     Harness.Renderer.render(path)
   end
 end
