@@ -74,7 +74,7 @@ defmodule Harness.Renderer do
     """)
   end
 
-  @spec tree_node_callback({%File{}, [tuple()]}, %Run{}) ::
+  @spec tree_node_callback({File.t(), [tuple()]}, Run.t()) ::
           {{String.t(), String.t()}, [tuple()]}
   defp tree_node_callback({%File{} = parent, children}, %Run{} = run)
        when is_list(children) do

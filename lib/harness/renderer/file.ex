@@ -5,6 +5,12 @@ defmodule Harness.Renderer.File do
 
   # a common interface for being a file
 
+  @type t() :: %__MODULE__{
+          source_path: String.t(),
+          output_path: String.t(),
+          type: :symlink | :hard_link
+        }
+
   defstruct [:source_path, :output_path, :type, root?: false]
 
   def print(%__MODULE__{root?: true} = root) do
@@ -57,7 +63,7 @@ defmodule Harness.Renderer.File do
     }
   end
 
-  @spec generate(%Run{}, %__MODULE__{}) :: String.t()
+  @spec generate(Run.t(), __MODULE__.t()) :: String.t()
   def generate(%Run{}, %__MODULE__{root?: true}), do: ""
 
   def generate(%Run{} = run, %__MODULE__{type: :regular} = file) do
@@ -134,12 +140,13 @@ defmodule Harness.Renderer.File do
     # of the two files are identical and the number of links reported by
     # `File.stat` is 2, but that's not entirely reliable, so doesn't seem
     # worthwhile since always re-linking is ok.)
-    with {:ok, %{type: :regular}} <- File.stat(to) do
-      File.rm!(to)
-      File.ln!(from, to)
+    case File.stat(to) do
+      {:ok, %{type: :regular}} ->
+        File.rm!(to)
+        File.ln!(from, to)
 
-      Utils.yellow("re-linked")
-    else
+        Utils.yellow("re-linked")
+
       {:error, :enoent} ->
         File.ln!(from, to)
 
