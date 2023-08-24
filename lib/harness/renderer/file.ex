@@ -1,7 +1,7 @@
 defmodule Harness.Renderer.File do
   @moduledoc false
 
-  alias Harness.Renderer.{Run, Helpers, Utils}
+  alias Harness.Renderer.{Run, Utils}
 
   # a common interface for being a file
 
@@ -65,13 +65,9 @@ defmodule Harness.Renderer.File do
 
     generated_contents =
       file.source_path
-      |> EEx.eval_file(
-        [assigns: run.generator_config],
-        functions: [
-          {Helpers, Helpers.__info__(:functions)},
-          {Elixir.Kernel, Kernel.__info__(:functions)}
-        ]
-      )
+      |> File.read!()
+      |> (&("<% import Harness.Renderer.Helpers %>" <> &1)).()
+      |> EEx.eval_string(assigns: run.generator_config)
       # this shouldn't be necessary but it prevents a strange dialyzer warn
       |> format_elixir(path, Path.extname(file.source_path))
 
