@@ -8,6 +8,13 @@ defmodule Harness.Renderer.Run do
   alias Harness.{Pkg, Renderer}
   alias Harness.Renderer.Utils
 
+  @type t() :: %__MODULE__{
+          output_directory: String.t(),
+          generator_module: atom(),
+          generator_config: Keyword.t(),
+          package_directory: String.t()
+        }
+
   defstruct [
     :output_directory,
     :generator_module,
