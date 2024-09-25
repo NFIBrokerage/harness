@@ -78,12 +78,15 @@ defmodule Harness.Manifest do
     :ok = ProjectStack.push(__MODULE__, config, Path.expand(path))
 
     deps = Mix.Dep.cached()
+    archive_path = archive_path()
 
     :ok =
       deps
       |> Enum.flat_map(&Mix.Dep.load_paths/1)
-      |> (&[archive_path() | &1]).()
       |> Enum.each(&Code.append_path/1)
+
+    Code.append_path(archive_path)
+    Mix.Task.load_tasks([archive_path])
 
     deps
     |> Enum.map(fn %Mix.Dep{app: app} -> app end)
