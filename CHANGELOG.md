@@ -6,13 +6,32 @@ The format is based on [Keep a
 Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.7.5 - 2024-09-25
+## 0.8.3 - 2024-09-25
 
 ### Fixed
 
 - Makes sure all harness archive tasks are loaded and available to use
 
-## 0.7.4 - 2023-08-09
+## 0.8.2 - 2024-03-18
+
+### Changed
+
+- Updated `actions/checkout@` from `v3` to `v4` in GH actions
+- Updated `actions/cache@` from `v3` to `v4` in GH actions
+- Updated `NFIBrokerage/create-release@` from `v3` to `v4` in GH actions
+
+## 0.8.1 - 2023-08-24
+
+### Changed
+
+- Updated `actions/checkout@` from `v1` to `v3` in GH actions
+- Updated `actions/cache@` from `v1` to `v3` in GH actions
+- Updated `NFIBrokerage/create-release@` from `v2` to `v3` in GH actions
+- Change `release_name` to `name` field in `NFIBrokerage/create-release@v3`
+  action in GH actions
+- Fixed credo warnings
+
+## 0.8.0 - 2023-08-09
 
 ### Fixed
 
